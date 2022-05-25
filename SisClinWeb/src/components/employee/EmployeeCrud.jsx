@@ -8,13 +8,13 @@ const headerProps = {
     subtitle: 'Cadastro de Funcionário'
 }
 
-const baseUrl = 'http://localhost:52727/api/Employee'
+const baseUrl = 'http://localhost:5000/api/Employers'
 const initialState = {
-    Employee: { EmployeeName: '', Department: '', EmployeeRg: '', EmployeeCpf: '', EmployeeStatus: '' },
+    Employer: { EmployerName: '', EmployerRg: '', EmployerCpf: '', Tipe: '' },
     list: []
 }
 
-export default class EmployeeCrud extends Component {
+export default class EmployerCrud extends Component {
     state = { ...initialState }
 
     componentWillMount() {
@@ -24,33 +24,34 @@ export default class EmployeeCrud extends Component {
     }
 
     clear() {
-        this.setState({ Employee: initialState.Employee })
+        this.setState({ Employer: initialState.Employer })
     }
 
     save() {
-        const Employee = this.state.Employee;
-        Employee.EmployeeRg = parseInt(Employee.EmployeeRg);
-        Employee.EmployeeCpf = parseInt(Employee.EmployeeCpf);
-        Employee.EmployeeStatus = parseInt(Employee.EmployeeStatus);
-        const method = Employee.id ? 'put' : 'post'
-        const url = Employee.id ? `${baseUrl}/${Employee.id}` : baseUrl
-        axios[method](url, Employee)
+        const Employer = this.state.Employer;
+        Employer.EmployerName = parseInt(Employer.EmployerName);
+        Employer.EmployerRg = parseInt(Employer.EmployerRg);
+        Employer.EmployerCpf = parseInt(Employer.EmployerCpf);
+        Employer.Tipe = parseInt(Employer.Tipe);
+        const method = Employer.id ? 'put' : 'post'
+        const url = Employer.id ? `${baseUrl}/${Employer.id}` : baseUrl
+        axios[method](url, Employer)
             .then(resp => {
                 const list = this.getUpdatedList(resp.data)
-                this.setState({ Employee: initialState.Employee, list })
+                this.setState({ Employer: initialState.Employer, list })
             })
     }
 
-    getUpdatedList(Employee, add = true) {
-        const list = this.state.list.filter(e => e.id !== Employee.id)
-        if (add) list.unshift(Employee)
+    getUpdatedList(Employer, add = true) {
+        const list = this.state.list.filter(e => e.id !== Employer.id)
+        if (add) list.unshift(Employer)
         return list
     }
 
     updateField(event) {
-        const Employee = { ...this.state.Employee }
-        Employee[event.target.name] = event.target.value
-        this.setState({ Employee })
+        const Employer = { ...this.state.Employer }
+        Employer[event.target.name] = event.target.value
+        this.setState({ Employer })
     }
 
     renderForm() {
@@ -61,28 +62,18 @@ export default class EmployeeCrud extends Component {
                         <div className="form-group">
                             <label>Nome</label>
                             <input type="text" className="form-control"
-                                name="EmployeeName"
-                                value={this.state.Employee.EmployeeName}
+                                name="EmployerName"
+                                value={this.state.Employer.EmployerName}
                                 onChange={e => this.updateField(e)}
                                 placeholder="Digite o nome..." />
                         </div>
                     </div>
                     <div className="col-12 col-md-6">
                         <div className="form-group">
-                            <label>Departamento</label>
-                            <input type="text" className="form-control"
-                                name="Departamento"
-                                value={this.state.Employee.Departamento}
-                                onChange={e => this.updateField(e)}
-                                placeholder="Digite o Departamento..." />
-                        </div>
-                    </div>
-                    <div className="col-12 col-md-6">
-                        <div className="form-group">
                             <label>RG</label>
                             <input type="text" className="form-control"
-                                name="EmployeeRg"
-                                value={this.state.Employee.EmployeeRG}
+                                name="EmployerRg"
+                                value={this.state.Employer.EmployerRG}
                                 onChange={e => this.updateField(e)}
                                 placeholder="Digite o RG..." />
                         </div>
@@ -91,18 +82,18 @@ export default class EmployeeCrud extends Component {
                         <div className="form-group">
                             <label>CPF</label>
                             <input type="text" className="form-control"
-                                name="EmployeeCpf"
-                                value={this.state.Employee.EmployeeCpf}
+                                name="EmployerCpf"
+                                value={this.state.Employer.EmployerCpf}
                                 onChange={e => this.updateField(e)}
                                 placeholder="Digite o CPF..." />
                         </div>
                     </div>
                     <div className="col-12 col-md-6">
                         <div className="form-group">
-                            <label>Status</label>
+                            <label>Tipe</label>
                             <input type="text" className="form-control"
-                                name="EmployeeStatus"
-                                value={this.state.Employee.EmployeeStatus}
+                                name="EmployerStatus"
+                                value={this.state.Employer.Tipe}
                                 onChange={e => this.updateField(e)}
                                 placeholder="Digite o Status..." />
                         </div>
@@ -120,13 +111,13 @@ export default class EmployeeCrud extends Component {
         )
     }
 
-    load(Employee) {
-        this.setState({ Employee })
+    load(Employer) {
+        this.setState({ Employer })
     }
 
-    remove(Employee) {
-        axios.delete(`${baseUrl}/${Employee.id}`).then(resp => {
-            const list = this.getUpdatedList(Employee, false)
+    remove(Employer) {
+        axios.delete(`${baseUrl}/${Employer.id}`).then(resp => {
+            const list = this.getUpdatedList(Employer, false)
             this.setState({ list })
         })
     }
@@ -138,10 +129,9 @@ export default class EmployeeCrud extends Component {
                     <tr>
                         <th>ID</th>
                         <th>Nome</th>
-                        <th>Departamento</th>
                         <th>RG</th>
                         <th>CPF</th>
-                        <th>Status</th>
+                        <th>Tipo</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -153,20 +143,19 @@ export default class EmployeeCrud extends Component {
     }
 
     renderRows() {
-        return this.state.list.map(Employee => {
+        return this.state.list.map(Employer => {
             return (
-                <tr key={Employee.id}>
-                    <td>{Employee.EmployeeId}</td>
-                    <td>{Employee.EmployeeName}</td>
-                    <td>{Employee.Department}</td>
-                    <td>{Employee.EmployeeRg}</td>
-                    <td>{Employee.EmployeeCpf}</td>
-                    <td>{Employee.EmployeeStatus}</td>
+                <tr key={Employer.id}>
+                    <td>{Employer.EmployerId}</td>
+                    <td>{Employer.EmployerName}</td>
+                    <td>{Employer.EmployerRg}</td>
+                    <td>{Employer.EmployerCpf}</td>
+                    <td>{Employer.Tipe}</td>
                     <td>
-                        <button className="btn btn-warning" onClick={() => this.load(Employee)} >
+                        <button className="btn btn-warning" onClick={() => this.load(Employer)} >
                             <i className="fa fa-pencil"></i>
                         </button>
-                        <button className="btn btn-danger ml-2" onClick={() => this.remove(Employee)} >
+                        <button className="btn btn-danger ml-2" onClick={() => this.remove(Employer)} >
                             <i className="fa fa-trash"></i>
                         </button>
                     </td>
